@@ -1,0 +1,42 @@
+\documentclass[a4paper,12pt]{article}
+\title{how to program RSDC-GARCH}
+\author{ZHU Cai\\ Department of Applied Mathematics}
+\usepackage{amsmath,amsthm}
+
+\begin{document}
+\maketitle
+\noindent\textbf{P} denotes the transition matrix of HMM:
+\[
+\begin{array}{ccc}
+
+\end{array}
+\]
+
+\noindent $Y_t=\{y_t, y_{t-1}, y_{t-2}, \cdots\}$, history information set of data obtained through date t;\\
+
+\noindent $f(y_t|s_t=j,Y_{t-1};\theta)$ denotes the conditional density of $y_t$;\\
+\noindent $\eta_t$ is a $R\times1$ vector, and $\eta_t[j]= f(y_t|s_t=j,Y_{t-1};\theta)$\\
+
+\noindent $\mathcal{P}(S_t=j|Y_t;\theta)$ denotes probability of HMM stays at the state j at time t, based on data
+obtained through date t and based on knowledge of population paremeters $\theta$;\\
+\noindent $\xi_{t|t}$ is a $R\times1$ vector, and $\xi_{t|t}[j]=\mathcal{P}(S_t=j|Y_t;\theta)$\\
+
+\noindent $\mathcal{P}(S_{t+1}=j|Y_t;\theta)$ denotes probability of HMM stays at the state j at time t+1, based on data obtained through date t and based on knowledge of population paremeters $\theta$;\\
+\noindent $\xi_{t+1|t}$ is a $R\times1$ vector, and $\xi_{t+1|t}[j]=\mathcal{P}(S_{t+1}=j|Y_t;\theta)$\\
+
+\noindent $\mathcal{P}(S_t=j|Y_{t-1};\theta)$ denotes probability of HMM stays at the state j at time t, based on data obtained through date t and based on knowledge of population paremeters $\theta$;\\
+\noindent $\xi_{t|t-1}$ is a $R\times1$ vector, and $\xi_{t|t-1}[j]=\mathcal{P}(S_t=j|Y_{t-1};\theta)$\\
+
+\noindent At each date t, there are following equations:\\
+\begin{equation}
+\centering
+\hat{\xi}_{t|t}=\frac{\hat{\xi}_{t|t-1}\odot\eta_t}{\textbf{1}^{'}(\hat{\xi}_{t|t-1}\odot\eta_t)}
+\end{equation}
+\begin{equation}
+\centering
+\hat{\xi}_{t+1|t}=\textbf{P}\cdot\hat{\xi}_{t|t}
+\end{equation}
+
+
+
+\end{document}

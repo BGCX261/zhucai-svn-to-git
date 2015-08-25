@@ -1,0 +1,186 @@
+\documentclass[a4paper,12pt]{article}
+\title{Assignment 1}
+\author{ZHU Cai\\
+Student No.: 09902510R\\
+Department of Applied mathematics}
+\usepackage{graphics}
+\begin{document}
+\maketitle
+@
+This assignment is programed and calculated using R-2.10.1.\\
+
+\section*{Question 1}
+\noindent First, we calculate the means of stock T and stock B,
+<<>>=
+# inputs
+returnrate_a<-c(0.19,0.08,-0.12,-0.03,0.15)
+returnrate_b<-c(0.08,0.03,-0.09,0.02,0.04)
+# mean calculation
+m_a<-mean(returnrate_a)
+m_b<-mean(returnrate_b)
+round(m_a,4)
+round(m_b,4)
+@
+from the results, we can see that Stock T is most desirable. Next, we calculate the standard deviations,
+<<>>=
+# standard deviations calculation
+sd_a<-sd(returnrate_a)
+sd_b<-sd(returnrate_b)
+round(sd_a,4)
+round(sd_b,4)
+@
+from the results, we can see that Stock B is most desirable.\\
+\noindent Finally, we calculate the Shape Radio, from definition, we know Shape Radio can be calculated as follows:\\
+\begin{equation}
+\centering
+Shape\ Radio = \frac{R-R_f}{\sigma_R}
+\end{equation}
+where $R_f$ is the risk free rate.
+<<>>=
+rf<-0.02 # risk free rate
+R_a<-(m_a-rf)/sd_a
+R_b<-(m_b-rf)/sd_b
+round(R_a,4)
+round(R_b,4)
+@
+from the results, we can see that Stock T is most desirable.\\
+
+\section*{Question 2}
+\noindent (a) For 6-month apartment lease\\
+\noindent if the couple stay in apartment A, they should pay (present value) :\\
+<<>>=
+renta<-1000
+df<-1/(1+0.01)
+power<-seq(0:5)
+pva<-renta*sum(df^power)
+round(pva,0)
+@
+\noindent if the couple stay in apartment B, they should pay (present value) :\\
+<<>>=     
+rentb<-900                   
+df<-1/(1+0.01)                  
+power<-seq(0:5)                
+pvb<-rentb*sum(df^power)+1000
+round(pvb,0)
+@
+from the result, we can see the couple should stay in apartment A.\\
+
+\noindent (b) For 12-month apartment lease\\
+\noindent if the couple stay in apartment A, they should pay (present value) :\\     
+<<>>=                                                                               
+renta<-1000                                                                         
+df<-1/(1+0.01)                                                                      
+power<-seq(0:11)                                                                     
+pva<-renta*sum(df^power)                                                           
+round(pva,0) 
+@
+\noindent if the couple stay in apartment B, they should pay (present value) :\\                                                                          
+<<>>=                                                                              
+rentb<-900                                                                         
+df<-1/(1+0.01)                                                                     
+power<-seq(0:11)                                                                    
+pvb<-rentb*sum(df^power)+1000 
+round(pvb,0)
+@
+from the result, we can see the couple should stay in apartment B.\\
+
+\section*{Question 3}
+\noindent To find the IRR is to find the root of a  polynomial, in this question, we use the bisection method. 
+<<>>= 
+# Inicialization                                                    
+x0<--110
+x<-35
+y0<--150
+y<-40
+power<-seq(1:5)
+
+# Set IRR Equations for project 1 and project 2
+fn1<-function(r1){
+df1<-1/(1+r1)
+pv1<-x*sum(df1^power)+x0
+return(pv1)
+}
+
+fn2<-function(r2){
+df2<-1/(1+r2)
+pv2<-y*sum(df2^power)+y0
+return(pv2)
+} 
+@ 
+in order to use the bisection method, we should find an inicial interval which contains the root,from 
+the figures, we know that the root should be in ${0.05, 0.30}$.
+\begin{figure}
+\centering
+<<>>=
+# Find Roots with Bisection method, the script is in the addendum
+# Find Inicial Intervels
+<<fig=TRUE,echo=FALSE>>=
+r<-seq(from=0.05,to=0.30,by=0.001)
+par(mfrow=c(1,2))
+plot(r,lapply(r,fn1),type="l",main="fn1")
+plot(r,lapply(r,fn2),type="l",main="fn2")
+@
+\end{figure}
+<<>>=
+# Use Bisection Function
+setwd("C:/Documents and Settings/zc/Desktop/course-IS") # can be changed 
+source("bisection.R")
+IRR1<-bisection(fn1,x.l=0.05, x.r=0.30)
+IRR2<-bisection(fn2,x.l=0.05, x.r=0.30)
+IRR1
+IRR2
+@ 
+to calculate NPV, we discount the cash flow to the inicial time point 
+<<>>=
+# NPV Calculation 
+r<-0.05
+NPV1<-fn1(0.05)
+NPV2<-fn2(0.05)
+round(NPV1,0)
+round(NPV2,0)
+@
+\noindent\textbf{Present value criterion:}\\
+\noindent The higher the present value, the more desirable the alternative, so we choose 1;\\
+\noindent\textbf{Internal rate of return criterion:}\\
+\noindent The higher the internal rate of return, the more desirable the alternative, so we choose 1;\\
+thus, the IRR and NPV yield same recommendations. \\
+
+\section*{Question 4}
+\noindent$CFS(-2X_0, X_d + X_s)$ \\
+\noindent$X_d = 1.2X_0\ ;\ \ X_s = RX_0;$\\
+\noindent$R_{total} = (1.2 + R)X_0/2X_0 = (1.2 + R)/2$\\
+
+
+\section*{Question 5} 
+\noindent From the definition, the mean rate of return of the portfolio is                                                            
+\begin{equation}                                                                                                                      
+\centering                                                                                                                            
+E(r) = E(\sum\limits_{i=1}^{n}\omega_ir_i) = \sum\limits_{i=1}^{n}\omega_iE(r_i) = \alpha\overline{r}_A + (1-\alpha)\overline{r}_B    
+\end{equation}                                                                                                                        
+And the standard deviation is                                                                                                         
+\begin{equation}                                                                                                                      
+\centering                                                                                                                            
+std(r) = \sqrt{\sum\limits_{i,j=1}^{n}\omega_i\omega_j\sigma_{ij}} = \sqrt{\alpha^2\sigma_A + (1-\alpha)^2\sigma_B +                 
+2\alpha(1-\alpha)\sigma_{AB}}                                                                                                           
+\end{equation}                                                                                                                        
+<<>>=
+# inicialization
+sigA<-0.15
+sigB<-0.05
+ro<-0.2
+# set function
+fn<-function(a){
+fn0<-a^2*0.15^2+(1-a)^2*0.05^2 + 2*a*(1-a)*0.05*0.15*0.2
+fn1<-0.3*a-2*(1-a)*0.05 + 2*0.2*0.15*0.05*(1-2*a)
+fn2<-0.3+0.1 - 2*0.2*0.15*0.05*2
+return(c(-1*fn0,-1*fn1,-1*fn2))
+}
+# opimization
+source("C:/Program Files/R/R-2.10.1/work/newton.R") # can be change
+result<-newton(fn,0.3)
+result
+std<-sqrt(-1*fn(result)[1])
+std
+@
+from the calculation, we know that the desirable $\alpha$ is 0.25, and the minimum standard deviation is 5.8\%. From the definition of $E(r)$, we know the expected return of this portfolio is 2.75\%.
+\end{document}

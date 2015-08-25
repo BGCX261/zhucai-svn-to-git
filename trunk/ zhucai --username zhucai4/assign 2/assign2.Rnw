@@ -1,0 +1,169 @@
+\documentclass[a4paper,12pt]{article}
+\title{Assignment 2}
+\author{ZHU Cai\\
+Student No.: 09902510R\\
+Department of Applied mathematics}
+\usepackage{graphics}
+\usepackage{amsmath}
+\begin{document}
+\maketitle
+This assignment is programed and calculated using R-2.10.1.\\
+\section*{Question 1}
+\noindent (a) From the definition, the rate of return, r, can be calculate as $r = \frac{X_1-X_0}{X_0}$:
+\begin{gather}
+X_0 = 1e6 + 0.5\times u\\
+X_1 = 0.6\times4e6 + 0.4\times u = 2.4e6 + 0.4\times u
+\end{gather}
+Thus, the rate of return
+\begin{equation}
+r = \frac{1.4e6 - 0.1u}{1e6 + 0.5u}
+\end{equation}
+
+\noindent (b) There is a simple answer: we can make the rate of return 4e6 in probability of
+1, so we should buy 4e6 pieces of insurance. If it does not rain, the investor will get 4e6,
+and if it does rain, the investor will also get 4e6 from those insurance. Thus, there is
+no risk. Now, lets do some calculation.\\
+The variance of return can be definited as follows:\\
+\begin{equation}
+var = 0.6\times(4e6-2.4e6-0.4u)^2 + 0.4\times(u-2.4e6-0.4u)^2
+\end{equation}
+<<>>=
+variance<-function(x){
+fun<-0.6*(4-2.4-0.4*x)^2+0.4*(x-2.4-0.4*x)^2
+return(fun)
+}
+# minimization variance
+result<-optimize(variance,interval=c(3,6))
+result
+@
+From the result, we can see we should buy 4000000 units of insurance.
+\section*{Question 3}
+\noindent For (a)
+<<>>=
+rm(list=ls(all=TRUE))
+a<-c(1,1,0,-1,1,2,1,-1,0,1,2,-1,1,1,1,0)
+A<-matrix(a,nrow=4,ncol=4,byrow=TRUE)
+B<-c(0,0,0,1)
+A
+solve(A,B)
+@
+\noindent For (b)
+<<>>=
+rm(list=ls(all=TRUE))
+d<-c(1,1,0,-0.4,-1,
+     1,2,1,-0.8,-1,
+     0,1,2,-0.8,-1,
+     0.4,0.8,0.8,0,0,
+     1,1,1,0,0)
+D<-matrix(d,nrow=5,ncol=5,byrow=TRUE)
+E<-c(0,0,0,0.6,1)
+D
+solve(D,E)
+@
+\noindent For (c)
+<<>>=
+rm(list=ls(all=TRUE))
+cov<-matrix(c(1,1,0,1,2,1,0,1,2),nrow=3,ncol=3,byrow=TRUE)
+Return<-c(0.4,0.8,0.8)
+omega1<-solve(cov,Return)
+omega1/sum(omega1)
+
+omega2<-solve(cov,(Return-0.1))
+omega2/sum(omega2)
+@
+Thus, (a)$w_1 = 1, w_2 = -0.5,w_3 =0.5, \mu=0.5$;\\
+\noindent (b) $w_1=0.5, w_2 =0, w_3=0.5, \lambda=1.25, \mu=0$\\
+\noindent (c) when $\lambda=1, \mu=0$, we have $w_1 =0.5, w_2 =0, w_3 =0.5$
+and when $r_f =0.1$, we have $w_1 = 0.33, w_2 = 0.17, w_3 = 0.5$
+
+\section*{Question 4}
+<<>>=
+rm(list=ls(all=TRUE))
+data<-read.csv("C:/Documents and Settings/zc/Desktop/mywork/course-IS/assign 2/assig2q4.csv")
+stocks<-data[ ,2:16]    # close price for 15 stocks
+
+Ocal<-function(data){
+# function calculting Oij in the lecture notes for each stock
+T<-22     # investment period
+n<-length(data)
+K<-n-T    # sample size
+O<-rep(0,length=K)
+  for(j in 1:K){
+  O[j]<-(data[(j+T)]-data[j])/data[j]
+  }
+return(O)
+}
+
+returns<-apply(stocks,2,Ocal)  # calculte Oij for each stock
+dim(returns)                   # examing dimentions
+
+# for question (1)
+r<-apply(returns,2,mean)       # return vector containing expected returns for each stock
+COV<-cov(returns)              # calculate covirance matrix
+N<-ncol(COV)                   # examing dimentions
+N
+# begin construction for solve A2%*%x=B1
+vector<-rep(-1,length=N)
+A1<-cbind(COV,vector)
+dim(A1)
+vector<-c(rep(1,length=N),0)
+A2<-rbind(A1,vector)
+dim(A2)
+B1<-c(rep(0,length=N),1)
+# end construction
+omega1<-solve(A2,B1)
+round(omega1,4)
+
+# for question (2)
+# begin construction for solve C2%*%x=B2
+e<-rep(1,length=N)*(-1)
+r<--1*r
+C1<-cbind(COV,r,e)
+r<-c(r,0,0)
+e<-c(e,0,0)
+C2<-rbind(C1,r,e)
+dim(C2)
+B2<-c(rep(0,length=N),0.008,1)
+# end construction
+omega2<-solve(C2,B2)
+round(omega2,4)
+@
+Thus, omega1 is for question (a), and omega2 is for question (b).
+
+\section*{Question 7}
+\noindent (a) The Captical market line is as follows:\\
+\begin{equation}
+r_i = r_f + \frac{\sigma_i}{\sigma_M}(r_M - r_f)
+\end{equation}
+that is,
+\begin{equation}
+r_i = 0.03 + \frac{0.17}{0.32}\sigma
+\end{equation}
+\noindent (b) We know $r_i = 0.3$, from (a), we can calculate $\sigma = 0.51$\\\
+\noindent suppose $100\alpha$ percent of money is invested into the risk free asset, we
+have the follwoing equation:
+\begin{equation}
+30\times X_0 = 3\times\alpha X_0 + 20\times(1-\alpha)X_0
+\end{equation}
+where $X_0 = 1000$, so $\alpha = -0.59$, which means we should borrow $\alpha\times1000 =
+590$ at risk free rate, and invest these borrowed money into the risk asset.
+\noindent (c) The return rate $r = 0.5\times3 + 0.5\times20 = 11.5$, so we can expect to
+have $1000\times(1 + r) = 1115$ at the end of year.
+\section*{Question 8}
+\noindent From Question 7, we could know that there is a linear relationship between $r_i$
+and $\beta_i$. The equation is as follows:
+\begin{equation}
+r = r_f + (r_M -r_f)\times\beta
+\end{equation}
+where $r_f$ is the risk free return rate, and $r_M$ is the rate of return on the market potrfolio.
+<<>>=
+return<-c(0.07,0.13)
+beta<-c(0.6,1.5)
+summary(lm(return~beta))
+@
+\noindent from the result, we have the security market line:\\
+\begin{equation}
+r = 0.03 + 0.067\times\beta
+\end{equation}
+Thus, when $\beta$ is 2, r is 0.16.
+\end{document}

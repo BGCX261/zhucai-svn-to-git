@@ -1,0 +1,15 @@
+returnrate_a<-c(0.19,0.08,-0.12,-0.03,0.15)
+returnrate_b<-c(0.08,0.03,-0.09,0.02,0.04)
+m_a<-mean(returnrate_a)
+m_b<-mean(returnrate_b)
+sd_a<-sd(returnrate_a)
+sd_b<-sd(returnrate_b)
+rf<-0.02
+R_a<-(m_a-rf)/sd_a
+R_b<-(m_b-rf)/sd_b
+round(m_a,4)
+round(m_b,4)
+round(sd_a,4)
+round(sd_b,4)
+round(R_a,4)
+round(R_b,4)

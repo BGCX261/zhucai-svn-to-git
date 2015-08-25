@@ -1,0 +1,141 @@
+\documentclass[a4paper,12pt]{article}
+\title{literature review}
+\author{ZHU Cai\\ Department of Applied Mathematics}
+\usepackage{amsmath,amsthm,AMSFonts}
+\begin{document}
+\maketitle
+\section{Introduction}
+
+\section{Multivariate GARCH Models}
+Since the seminal work of Bollerslev (1990), multivariate GARCH models attracted considerable interest given their direct application in both financial and economic empirical researches. Up until now, they represent a fundamental tool for asset and risk management and are employed in most financial market analysis. A general multivariate GARCH model can be defined as follows:
+\noindent A dynamic model with time-varying means, variances and covariances for the N components of $y_t = (y_{1t}, \ldots, y_{Nt})^{'}$:
+\begin{equation}
+\centering
+y_t = \mu_t + \varepsilon_t
+\end{equation}
+\begin{equation}
+\centering
+\varepsilon_t = H_t^{1/2}z_t, \ \ H^{1/2} a N\times N matrix
+\end{equation}
+\begin{equation}
+\centering
+z_t \ \ \ IID, \ \ E(z_t) = 0, \ \ \ Var(z_t) = I_N
+\end{equation}
+\begin{equation}
+\centering
+\mu_t = E(y_t|I_{t-1}) = E_{t-1}(y_t)
+\end{equation}
+\begin{equation}
+\centering
+H_t = H_t^{1/2}(H_t^{1/2})^{'} = Var(y_t|I_{t-1}) = Var_{t-1}(y_t)
+\end{equation}
+where $I_{t-1}$ is the information available at time t-1, at least containing ${y_{t-1},y_{t-2},\dots}$\\
+
+\noindent A general and earliest formulation of $H_t$ has been proposed by Bollerslev et al.(1988). In the general VEC model, each element of $H_t$ is a linear function of the lagged squared errors and cross-products of errors and lagged values of the elements of $H_t$. The VEC(1,1) model is defined as \\
+\begin{equation}
+\centering
+h_t = c + A\eta_{t-1} + Gh_{t-1}
+\end{equation}
+\noindent where
+\begin{equation}
+\centering
+h_t = \textit{vech}(H_t)
+\end{equation}
+\begin{equation}
+\centering
+\eta_t = \textit{vech}(\varepsilon_t\varepsilon_t^{'})
+\end{equation}
+and \textit{vech}($\cdot$) denotes the operator that stacks the lower triangular portion of a $N\times N$ matrix as a $N\times(N+1)/2\times1$ vector. A and G are square parameter matrices of order $N\times(N+1)/2$ and c is a $N\times(N+1)/2\times1$ parameter vector.\\
+
+\noindent The constraints required to ensure the positive of conditional variances, the positive semi-deiniteness of the variance-covariance matrix and the computational burden of this model create many problems in the application. Thus, there are large amount of literatures aiming to improve the model. For instance, Engle and Kroner(1995) provide BEKK model, Bollerslev (1990) provide Constant Conditional Correlation GARCH model (CCC-GARCH), Alexander and Chibumba (1997) provide Orthogonal (O-GARCH) Model, and van der Weide (2002)provide  Generalized Orthogonal (GO-GARCH) Model. However, the most used structure is the Dynamic Conditional Correlation GARCH model (DCC-GARCH), developed by Engle (2002). The model is defined as follows:
+\begin{equation}
+\centering
+H_t = D_tR_tD_t
+\end{equation}
+\begin{equation}
+\centering
+R_t = diag (Q_t)^{-1/2}Q_tdiag (Q_t)^{-1/2}
+\end{equation}
+\begin{equation}\label{DCCQ}
+\centering
+Q_t = S(1 - \alpha- \beta) + \alpha\varepsilon_{t-1}\varepsilon_{t-1}^{'} + \beta Q_{t-1}
+\end{equation}
+where $\alpha$ and $\beta$ are non-negative parameters and $\varepsilon_t = D_t^{-1}y_t$ are the standardized but correlated residuals. That is, the conditional variances of the components of $\varepsilon_t$ are equal to 1, but the conditional correlation are given by $R_t$. The term $diag(Q_t)$ is a diagonal matrix with the same diagonal elements as $Q_t$. S is the sample correlation matrix of $\varepsilon_t$, which is a consistent estimator of the unconditional correlation matrix. If $\alpha$ and $\beta$ are zero, one obtains the CCC-GARCH model (Bollerslev 1990).\\
+
+\noindent As seen from, the DCC-GARCH model decrease the number of estimated parameters to a notable extent. However, this simplicity of the suggested approaches is coupled with a strong restriction: the dynamic of correaltion is constant among all the variables. This constraint can be removed, as suggested by Engle (2002) estimating an unrestricted DCC (GDCC-GARCH), where in equation (\ref{DCCQ}), $Q_t$ is changed:
+\begin{equation}
+\centering
+Q_t = ( i\/i^{'} - \alpha- \beta)\odot S + A \odot\varepsilon_{t-1}\varepsilon_{t-1}^{'} + B\odot Q_{t-1}
+\end{equation}
+and A and B are full square matrices of dimension N, i is a vector of ones and $\odot$ denotes the Hadamard product.
+Or suggested also by Engle (2002), in the Flexible DCC (FDCC-GARCH), $Q_t$ is changed:
+\begin{equation}
+\centering
+Q_t = c\/c^{'}\odot S + a\/a^{'} \odot\varepsilon_{t-1}\varepsilon_{t-1}^{'} + b\/b^{'}\odot Q_{t-1}
+\end{equation}
+where a, b and c are partitioned parameter vectors. For example, $a = [a_1i(m_1), a_2i(m_2),\ldots, a_wi(m_w)]^{'}$, where w is the number of partitions and $i(m_j)$ is a row vector of one of dimension $m_j$ with $\sum_{j}m_j = N$.
+Conditions for positive definiteness of $Q_t$ are provided in Ding and Engle (2001). Clearly, the GDCC-GARCH modle creates the well-known problem of the high number of parameters. Thus, Fanses and Hafner (2003)propose a restricted GDCC model, suggesting that $A = aa^{'}$, where a is vector of dimension N and $B = \beta$ is a scalar and impose the positive definiteness by modifying the intercept term of the GDCC equation. Other extensions of DCC-GARCH models include: Asymmetric DCC-GARCH (Cappiello et al. 2003), Quadratic Flexible DCC-GARCH ( Billio and Caporin 2004), Sequential Conditional Correlation (SCC-) GARCH Models (Alessandro Palandri 2009).\\
+
+\noindent There is another type of DCC-GARCH models, which can be regarded as transition states between CCC-GARCH model and DCC-GARCH models. In these models, covariances are also decomposed into standard deviations and correlations, but these correlations are dynamic. The correlation matrix follows a regime switching model; it is constant within a regime but different across regimes. According to the differences of the transition mechanics,these models fall into to two categories: (1)Smooth Transition Conditional Correlation (STCC-)GARCH model and its extensions; (2)Markov regime switching Conditional Correlation (MRSDC-) GARCH model and its extensions.\\
+
+\noindent Smooth Transtition Conditional Correlation (STCC-) GARCH model (Silennoinen and Terasvirta 2005) can be defined as follows:
+\begin{equation}
+\centering
+R_t = (1 - G(S_t))R_{(1)} + G(S_t)R_{(2)}
+\end{equation}
+where $R_(1)$ and $R_(2)$, $R_{(1)}\neq R_(2)$, are positive definite correlation matrices that describe the two extreme states of correlations, and $G(\cdot):\mathbb{R} \rightarrow (0,1)$, is a monotonic function of an observable transition variable $s_t\in \mathcal{F}^{*}_{t-1}$. The authors define $G(\cdot)$ as the logistic function
+\begin{equation}
+\centering
+G(S_t) = (1 - e^(-\gamma(S_t - C)))^{-1}, \ \ \ \gamma>0
+\end{equation}
+where the parameter $\gamma$ determines the velocity and c the location of the transition. In addition to the univariate variance equations, the STCC-GARCH model has N(N-1)+2 parameters. A special case of the STCC-GARCH model is obtained when the transition variable is calendar time. The Time Varying Conditional Correlation (TVCC-) GARCH model was in its bivariate form introduced by Berben and Jansen (2005). Silennoinen and Terasvirta (2009) further extend this model to the Double Smooth Transition Conditional Correlation (DSTCC-) GARCH model, by including another variable according to which the correlations change smoothly between states of constant correlations.\\
+
+\noindent Markov Regime Switching Conditional Correlation (MRSCC) GARCH model (Pletier 2006) can be defined as follows:\\
+\begin{equation}
+\centering
+\mathbb{P}_t = \sum\limits^{R}_{r=1}\mathbb{I}_{\Delta_t=r}\mathbb{P}_{(r)}
+\end{equation}
+where $\Delta_t$ is a (usually first order) Markov chain independent of $\eta_t$ that can take R possible values and is governed by a transition probability matrix $\Pi$, which stays the same in different regimes. $\mathbb{I}$ is the indicator function, and $\mathbb{P}_r, r = 1, \ldots, R$, are positive definite regime-specific correlation matrices. Correlation component of the model has $RN(N-1)/2-R(R-1)$ parameters. A version that involves fewer parameters is obtained by restricting the R possible states of correlations to be linear combinations of a state of zero correlations and that of possibly high correlations. Thus,
+\begin{equation}
+\centering
+\mathbb{P}_t = (1 - \lambda(\Delta_t))\mathbb{I} + \lambda(\Delta_t)\mathbb{P}
+\end{equation}
+where $\mathbb{I}$ is the identity matrix ('no correlation'), $\mathbb{P}$ is a correlation matrix representing the state of possibly high correlations, and $\lambda(\cdot): {1, \ldots, R}\rightarrow[0, 1]$ is a monotonic function of $\Delta_t$. The number of regimes R is not a parameter to be estimated. But the simplification does not alow the correlations to change signs, which should be noticed. If N is not very small, Pelletier (2006) recommends two-step estimation. First estimate the parameters of the GARCH equations and then conditionally on these estimates, estimate the correlations and the switching probability using the EM algorithm. CHARLOT and MARIMOUTOU (2008) present a generalized version of MRSCC-GARCH model, which is building with the hierarchical generalization of the hidden Markov model introduced by Fine et al. (1998). This can be viewed graphically as tree-structure with different types of states. The first are called production states and they can emit observations just as classical Markov-Switching approach, The second are called abstract states. They cannot emit observations but establish vertical and horizontal probabilities that define the dynamic of the hidden hierarchical structure. The main gain of this approach compared to the classical Markov-Switching model is to increase the granularity of the regimes.Pelletier (2010) extends the MRSCC-GARCH model by letting the transition probability matrix $\Pi$ change during different regimes.In the extended model, weakly exogenous variables are introduced, in order to determine the switch from one regime to another.
+\begin{tabular}{||c||c||c||}
+\hline
+VEC-GARCH       & N(N+1)(N(N+1)+1)/2     &  465\\
+DVEC-GARCH      & 3N(N+1)/2              &  45\\
+BEKK-GARCH      & N(5N+1)/2              &  65\\
+CCC-GARCH       & N(N+5)/2               &  25\\
+ECCC-GARCH      & N(5N+1)/2              &  65\\
+DCC-GARCH       & (N+1)(N+4)/2           &  27\\
+EDCC-GARCH      & $(5N^2+N+4)/2$         &  67\\
+GDCC-GARCH      & 5N(N+1)/2              &  75\\
+FDCC-GARCH      & N(N+11)/2              &  40\\
+AGDCC-GARCH     & N(7N+5)/2              &  100\\
+RAGDCC-GARCH    & $(N^2+5N+6)/2$         &  28\\
+STCC-GARCH      & $N^2+2N+2$             &  37\\
+DSTCC-GARCH     & $2N^2+N+4$             &  59\\
+RSDC-GARCH      & RN(N-1)/2+R(R-1)+3N    &  37(R=2)\\
+HRSDC-GARCH     & $2N^2+5N+12$           &  87\\
+SRSDC-GARCH     & RN(N-1)/2+2(m+1)+3N    &  37+2m(R=2)\\
+O-GARCH         & N(N+5)/2               &  25\\
+GO-GARCH        & N(N+5)/2               &  25\\
+\hline
+\end{tabular}
+\section{Structural Breaks and Contagion Analysis}
+\noindent Referring to the World Bank's classification, we can distinguish three definitions of contagion:\\
+\noindent\textbf{Broad Definition:}\\
+\noindent Contagion is the cross-country transmission of shocks or the general cross-country spillover effects.
+Contagion can take place both during "good" times and "bad" times. Then, contagion does not need to be related to crises. However, contagion has been emphasized during crisis times.\\
+\noindent\textbf{Restrictive Definition:}\\
+\noindent Contagion is the transmission of shocks to other countries or the cross-country correlation, beyond
+any fundamental link among the countries and beyond common shocks. This definition is usually referred as excess co-movement, commonly explained by herding behavior.\\
+\noindent\textbf{Very Restrictive Definition:}\\
+Contagion occurs when cross-country correlations increase during "crisis times" relative to correlations
+during "tranquil times." \\
+
+\noindent The variety of empirical methods developed for the analysis of contagion can be divided into two categories. The first category focuses on the change of conditional volatility and conditional correlations between different markets in crisis. During the crisis, volatility tends to be larger, and correlations between different markets tend to increase, compared with those in "tranquil times." Monica Billio and Massimiliano Caporin (2005)provide an extension of Dynamic Conditional Correlation model of Engle (2002) by allowing both the unconditional correlation and the parameters to be driven buy an unobservable Markov chain, and use the model to analyze contagion effect among seven stock markets. Thomas C. Chiang (2007) apply a DCC-GARCH (Engle 2002) model to nine Asian daily stock-return data series from 1990 to 2003 in order to confirm a contagion effect among these markets during the Asian crisis (1997). By analysis of correlation series drawn from DCC-GARCH model, an increase in correlation(contagion) around the year 1997 is detected. B.Jirasakuldech (2009) examine the dynamic behavior of Equity Real Estate Investment Trust (EREIT) volatility in a GARCH context from 1972 to 2006, using monthly ETEIT returns, and comparing volatility performance for "early" Equity REITs (1972-1992) with that of "modern" Equity REITs (1993-2006). Kim Hiang Liow and Zhiwei Chen (2009) examine the dynamics and transmission of conditional volatilities with multiple structural breaks in return volatility across five major securitized real estate markets as well as employing a multivariate regime-dependent asymmetric dynamic covariance model (MRDADC) to analyze correlations between these markets. Besides, Hsiu-Jung Tsai and Ming-Chi Chen (2010) investigates the possible impact of various events among interest rate, real house price and stock market dynamic interactions on the United States using a DCC-GARCH model (Engle 2002).\\
+
+\noindent The second category has the aim of testing the stability of parameters in the chosen econometric models, that is, testing the structural breaks in the very model. Evidence of parameter shifts is a signal of a change in the transmission mechanism. J.W.Kim (2007) use a multivariate monthly time series data set in a VAR framework, including returns of REITs, returns on equities, industrial production and so on, to find a structural break point, and to make a comparison about the model's performance before and after the break date. Meik Friedrich and Eduardo Vazquez Bea (2009) test for a structure break in cointegration analysis between REITs and American stock price index (UTIL), and find out the break point in Feb, 2007, which is coincident with the start of US sub-prime mortgage crisis. Brian M. Lucey and Svitlana Voronkova (2006) even use both VAR and DCC-GARCH models to analyze the structural breaks and correlation fluctuations among stock markets of Russia, United States and eastern European countries, during the 1997-1998 Russian crisis.\\
+\end{document}

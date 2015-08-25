@@ -1,0 +1,434 @@
+\documentclass[a4paper,12pt]{article}
+\title{Literature Review for Multivariate GARCH Models}
+\author{ZHU Cai\\
+Department of Applied Mathematics\\
+The Hongkong Polytechnic University}
+\date{\today}
+\usepackage{amsmath,amsthm,AMSFonts}
+\begin{document}
+\maketitle
+\noindent Modeling the temporal dependence in the second order moments and forecasting future volatility have key relevance in many financial-econometric issues such as portfolio management and selection, risk analysis and hedging and pricing of assets and derivatives. As a consequence, many multivariate GARCH (MGARCH) models have been developed in the recent years to model the conditional second moments. According to the survey article of Bauwens et al (2006) and Annastiina Silvennoinen (2008) multivariate GARCH models can be classified into three areas:\\
+\noindent (1) Direct generalizations of the univariate GARCH model, e.g. VEC, and BEKK models;\\
+\noindent (2) Linear combinations of univariate GARCH models, e.g. (generalized) orthogonal GARCH model and its generalizations;\\
+\noindent (3) Nonlinear combinations of univariate GARCH models, e.g. constant/dynamic conditional correlation models and their generalizations.\\
+Thus, we will provide a brief survey about these MGARCH models according to the classification above.\\
+
+\noindent Let $y_t$ be an N dimensional time series of length T. Suppose for simplicity that the mean of $y_t$ is zero. For example, $y_t$ could be the returns of the stocks in Heng Seng index. \\
+
+\section{The General Definition of MGARCH models}
+\noindent A dynamic model with time-varying means, variances and covariances for the N components of $y_t = (y_{1t}, \ldots, y_{Nt})^{'}$:
+\begin{equation}
+\centering
+y_t = \mu_t + \varepsilon_t
+\end{equation}
+\begin{equation}
+\centering
+\varepsilon_t = H_t^{1/2}z_t, \ \ H^{1/2} a N\times N matrix
+\end{equation}
+\begin{equation}
+\centering
+z_t \ \ \ IID, \ \ E(z_t) = 0, \ \ \ Var(z_t) = I_N
+\end{equation}
+\begin{equation}
+\centering
+\mu_t = E(y_t|I_{t-1}) = E_{t-1}(y_t)
+\end{equation}
+\begin{equation}
+\centering
+H_t = H_t^{1/2}(H_t^(1/2))^{'} = Var(y_t|I_{t-1}) = Var_{t-1}(y_t)
+\end{equation}
+where $I_{t-1}$ is the information available at time t-1, at least containing ${y_{t-1},y_{t-2},\dots}$
+
+\section{Direct Generalization of Univariate GARCH Models}
+\subsection{VEC Models}
+\noindent A general formulation of $H_t$ has been proposed by Bollerslev et al.(1988). In the general VEC model, each element of $H_t$ is a linear function of the lagged squared errors and cross-products of errors and lagged values of the elements of $H_t$. The VEC(1,1) model is defined as \\
+\begin{equation}
+\centering
+h_t = c + A\eta_{t-1} + Gh_{t-1}
+\end{equation}
+\noindent where
+\begin{center}
+\begin{equation}
+h_t = \textit{vech}(H_t)
+\end{equation}
+\begin{equation}
+\eta_t = \textit{vech}(\varepsilon_t\varepsilon_t^{'})
+\end{equation}
+\end{center}
+and \textit{vech}($\cdot$) denotes the operator that stacks the lower triangular portion of a $N\times N$ matrix as a $N\times(N+1)/2\times1$ vector. A and G are square parameter matrices of order $N\times(N+1)/2$ and c is a $N\times(N+1)/2\times1$ parameter vector.\\
+\noindent The number of parameters is $N(N+1)(N(N+1)+1)/2$( e.g. for N=3 it is equal to 78 ), which implies that in practice the use of this model is limited. To overcome this problem, Bollerslev et al.(1988) suggest the diagonal VEC(DVEC) model in which the A and G matrices are assumed to be diagonal, reducing the number of parameters to $N(N+5)/2$( e.g. for N=3 it is equal to 12 ).However, under this restriction, each element $h_{ijt}$ depends only on its own lag and on the previous value of $\varepsilon_{it}\varepsilon_{jt}$, which is too simple for the real world correlation.\\
+
+\subsection{BEKK(1, 1, K) Model}
+\noindent Engle and Kroner (1995) defines the BEKK{1, 1, K} model as:
+\begin{equation}\label{BEKK}
+\centering
+H_t = C^{{*}^{'}}C^{*} + \sum\limits^{K}_{k=1}A_k^{*^{'}}\varepsilon_{t-1}\varepsilon_{t-1}A_k^{*} + \sum\limits^{K}_{k=1}G_k^{*^{'}}H_{t-1}G_{k}^{*}
+\end{equation}
+\noindent where $C^{*}$, $A_k^{*}$, $G_k^{*}$ are $N\times N$ matrices but $C^{*}$ is upper triangular.\\
+\noindent The summation limit K determines the generality of the process. The parameters of the BEKK model do not represent directly the impact of the different lagged terms on the elements of $H_t$, like in the VEC model. The BEKK model is a special case of VEC model. The number of parameters in the BEKK(1, 1, 1) model is $N(5N+1)/2$(e.g. for N=3 it is 24). To reduce this number and consequently to reduce the generality, one can impose a diagonal BEKK model, i.e. $A_k^{*}$ and $G_k^{*}$ in (\ref{BEKK}) are diagonal matrices. This model is also a DVEC model but less general.\\
+
+\noindent The difficulty when estimating a VEC or even a BEKK model is the high number of unknown parameters, even after imposing several restrictions. It is thus not surprising that these models are rarely used when the number of series is lager than 3 or 4. Orthogonal models circumvent this difficulty by imposing a common dynamic structure on all the elements of $H_t$, which results in less parameterized models.
+
+\section{Linear Combinations of Univariate GARCH Models}
+\subsection{Factor-GARCH model}
+\noindent Engle, Ng, and Rothschild (1990) define a factor structure for the conditional covariance matrix as follows. They assume that $H_t$ is generated by K ($<N$) underlying, not necessarily uncorrelated, factors $f_{k,t}$ as follows:
+\begin{equation}
+\centering
+H_t = \Omega + \sum^K_{k=1}\omega_k\omega_k^{'}f_{k,t}
+\end{equation}
+where $\Omega$ is an $N\times N$ positive semi-definite matrix, $w_k, k = 1, \ldots, K$, are linearly independent $N\times1$ vectors of factor weights, and the $f_{t,k}$'s are factors. It is assumed that these factors have a first-order GARCH structure:
+\begin{equation}
+\centering
+f_{k,t} = \omega_k + \alpha_k(\gamma_k^{'}\varepsilon_{t-1})^2 + \beta_kf_{k,t-1}
+\end{equation}
+where $\omega_k,\alpha_k$, and $\beta_k$ are scalars and $\gamma_k$ is an $N\times1$ vector of weights.The number of factors K is intended to be much smaller than the number of assets N, which makes the model fersible even for a large number of assets.\\
+\noindent In the model, the factors are generally correlated. This may be undesirable as it may turn out that several of the factors capture very similar characteristics of the data. If the factors were uncorrelated, they would represent genuinely different common components driving the returns. Motivated by this concern, several factor models with uncorrelated factors have been proposed in the literature.
+
+\subsection{Orthogonal (O-GARCH) Model}
+\noindent In the orthogonal GARCH model of Alexander and Chibumba (1997), the observed data are assumed to be generated by an orthogonal transformation of N (or a smaller number of ) univariate GARCH process. The matrix of the linear transformation is the orthogonal matrix ( or a selection ) of eigenvectors of the population unconditional covariance matrix of the standardized returns. Thus, the $N\times N$ time-varying variance matrix $H_t$ is generated by $m\leq N$ univariate GARCH models. In the generalized version, this matrix must only be invertible. The O-GARCH(1, 1, m) model is defined as
+\begin{equation}
+\centering
+V^{-1/2}\varepsilon_t = u_t = \Lambda_m f_t
+\end{equation}
+where $V = diag(v_1, v_2, \ldots, v_N)$, with $v_i$ the population variance of $\varepsilon_{it}$, and $\Lambda_m$ is a matrix of dimension $N\times M$ given by
+\begin{equation}
+\centering
+\Lambda_m = P_m diag(l_1^{1/2}\ldots l_m^{1/2})
+\end{equation}
+$l_1\geq\ldots\geq l_m>0$ being the m largest eigenvalues of the population correlation matrix of $u_t$, and $P_m$ the $N\times N$ matrix of associated (mutually orthogonal) eigenvectors. The vector $f_t = (f_{1t}, \ldots, f_{mt})^{'}$ is a random process such that\\
+\begin{center}
+\begin{equation}
+E_{t-1}(f_t) = 0 \ \ and Var_{t-1}(f_t) = \Sigma_t = diag(\sigma^2_{f_{1t}}, \ldots, \sigma^2_{f_{mt}})
+\end{equation}
+\begin{equation}\label{OGARCH}
+\sigma^2_{f_{it}} = (1 - \alpha_i - \beta_i) + \alpha_if^2_{i,t-1} + \beta_i\sigma^2_{f_{i,t-1}}, i = 1, \ldots, m
+\end{equation}
+\end{center}
+Consequently,
+\begin{equation}
+\centering
+H_t = Var_{t-1}(\varepsilon_t) = V^{1/2}V_tV^{1/2}, \ where\  V_t = Var_{t-1}(u_t) = \Lambda_m\Sigma_t\Lambda_m^{'}
+\end{equation}
+The parameters of the model are V, $\Lambda_m$ and the parameters of the GARCH factors ($\alpha_i$'s and $\beta_i$'s). Alexander (2001) illustrates the use of the O-GARCH model. In practice, V and $\Lambda_m$ are replaced by their sample counterparts, and m is chosen by principal component analysis applied to the standardized residuals $u_t$.
+
+\subsection{Generalized Orthogonal (GO-GARCH) Model}
+In van der Weide (2002) the orthogonality condition assumed in the O-GARCH model is relaxed by assuming that the matrix $\Lambda$ in the relation $u_t = \Lambda f_t$ is invertible, rather than orthogonal. The definition of GO-GARCH(1, 1) model is inherited from the definition of O-GARCH model, where $m=N$ and $\lambda$ is a nonsingular matrix of parameters. The implied conditional correlation matrix of $\varepsilon_t$ can be expressed as
+\begin{equation}
+\centering
+R_t = J_t^{-1}V_tJ_t^{-1} \ where\  J_t = (V_t\odot I_m)^{1/2} \ and\  V_t = \Lambda\Sigma_t\Lambda^{'}
+\end{equation}
+In van der Weide (2002), the singular value decomposition of the matrix $\Lambda$ is used as a parametrization,i.e. $\Lambda = PL^{1/2}U$, where the matrix U is orthogonal, and P and L are defined as above (from the eigenvectors and eigenvalues). The O-GARCH model (when m=N), corresponds then to the particular choice $U = I_n$. More generally, van der Weide expresses U as the product of $N(N-1)/2$ rotation matrices:
+\begin{equation}
+\centering
+U = \prod\limits_{i<j}G_{ij}(\delta_{ij}) \ \ -\pi\leq\delta_{ij}\leq\pi}, \ \ i, j = 1, 2, \ldots, n
+\end{equation}
+where $G_{ij}(\delta_{ij})$ performs a rotation in the plane spanned by the \textit{i}th and \textit{j}th vectors of the canonical basis of $IR^N$ over an angle $\delta_{ij}$. For example, in the trivariate case
+\begin{equation}
+\centering
+G_{12} = \left(
+\begin{array}{ccc}
+\cos\delta_{12} &\sin\delta_{12} &0\\
+-\sin\delta_{12} &\cos\delta_{12} &0\\
+0 &0 &1
+\end{array}
+\right),\
+G_{13} = \left(
+\begin{array}{ccc}
+\cos\delta_{13} &0 &-\sin\delta_{13}\\
+0 &1 &0\\
+-\sin\delta_{13} &0 &\cos\delta_{13}
+\end{array}
+\right)
+\end{equation}
+and $G_{23}$ has the block with $\cos\delta_{23}$ and $\sin\delta_{23}$ functions in the lower right corner. The $N(N-1)/2$ rotation angles are parameters to be estimated.
+
+\subsection{Jump Switching Generalized Orthogonal (JSGO-GARCH) Model}
+Hsiang-Tai Lee(2009) develops a Markov regime switching Generalized Orthogonal GARCH model with conditional jump dynamics(JSGO). There are two major differences between JSGO-GARCH and GO-GARCH.\\
+\noindent For one thing, the mean function is different. In GO-GARCH models, the mean function is the same with general definition of MGARCH models. However, in JSGO-GARCH model, the $y_t$ can be written as
+\begin{equation}
+\centering
+y_t = \mu_{S_{t}} + \varepsilon_{t,S_{t}} + J_t
+\end{equation}
+where $\mu_{S_{t}} = ([\mu_{C,S_{t}}, \mu_{f,S_{t}}])^{'}$ is the state-dependent conditional mean vector and $\varepsilon_{t,S_{t}} = ([\varepsilon_{c,S{t}}, \varepsilon_{f,S{t}}])^{'}$ is the state-dependent residual vector, and $J_t$ is a state-independent jump component. $S_t$ is assumed to follow a first-order, two-state Markov process and the state transition probabilities are assumed to follow a logistic function such that
+\begin{center}
+\begin{equation}
+\mathbb{P}(S_t = 1 | S_{t-1} = 1) = \frac{exp(p_0)}{1 + exp(p_0)}
+\end{equation}
+\begin{equation}
+\mathbb{P}(S_t = 2 | S_{t-1} = 2) = \frac{exp(q_0)}{1 + exp(q_0)}
+\end{equation}
+\end{center}
+The jump component $J_t = ([J_t, J_t])^{'}$ is a 2-dimensioned vector with the common jump component of spot and futures return series $J_t$ defined as
+\begin{equation}
+\centering
+J_t = \sum\limits_{k=1}^{n_t}Y_k
+\end{equation}
+where the conditional jump size $Y_k$, given $\psi_{t-1}$, is presumed to be independent and normally distributed with constant mean $\tau$ and constant variance $\delta^2$, and $n_t$ is the discrete counting process governing the number of jumps that arrive between time t-1 and time t, which is distributed as a Possion random variable with the jump intensity parameter $\lambda>0$ and density
+\begin{equation}
+\centering
+P(n_t = k | \psi_{t-1}) = \frac{exp(-\lambda_t)\lambda_t^k}{k!}, \ \ \ \ k = 0, 1, \ldots
+\end{equation}
+The jump intensity $\lambda_t = E[n_t | \psi_{t-1}]$ is allowed to be time-varying and follows
+\begin{equation}
+\centering
+\lambda_t = \lambda_0 + a\lambda_{t-1} + b\xi_{t-1}
+\end{equation}
+where $\xi_{t-1}$ is the jump intensity residual and is calculated as
+\begin{equation}
+\centering
+\xi_{t-1} = E[n_{t-1}|\psi_{t-1}] - \lambda_{t-1} = \sum\limits^{\infty}_{k=0}k\mathbb{P}(n_{t-1}|\psi_{t-1}) - \lambda_{t-1}
+\end{equation}
+
+\noindent The other different between JSGO-GARCH and GO-GARCH is in (\ref{OGARCH}). In JSGO-GARCH model, the conditional covariance of $f_t$ is constructed by a switching GARCH(1,1) model, instead of the traditional GARCH-(1,1) model:
+\begin{equation}
+\centering
+\sigma^2_{f_{it}} = (1 - \alpha_{i,S_t} - \beta_{i,S_t}) + \alpha_{i,S_t}f^2_{i,t-1} + \beta_{i,S_t}\sigma^2_{f_{i,t-1}}, i = 1, \ldots, m
+\end{equation}
+
+
+\section{Nonlinear Combinations of Univariate GARCH  Models}
+\subsection{Constant Conditional Correlation (CCC) Model}
+\noindent The main benchmark is the CCC model of Bollerslev (1990), which specifies
+\begin{displaymath}
+\centering
+H_t=D_tRD_t
+\end{displaymath}
+where $D_t$ is a diagonal matrix with the square root of the estimated univariate GARCH variances on the diagonal, and R is the sample correlation matrix of $y_t$. Although the model is useful, the assumption of constant conditional correlations can be too restrictive. One may expect higher correlations in extreme market situations like economic crisis, for instance.\\
+
+\subsection{Dynamic Conditional Correlation (DCC) Model}
+\noindent Engle (2002) generalizes the CCC model to the Dynamic Conditional Correlation model (DCC). This model is
+\begin{center}
+\begin{equation}
+H_t = D_tR_tD_t
+\end{equation}
+\begin{equation}
+R_t = diag (Q_t)^{-1/2}Q_tdiag (Q_t)^{-1/2}
+\end{equation}
+\begin{equation}\label{DCCQ}
+Q_t = S(1 - \alpha- \beta) + \alpha\varepsilon_{t-1}\varepsilon_{t-1}^{'} + \beta Q_{t-1}
+\end{equation}
+\end{center}
+where $\alpha$ and $\beta$ are non-negative parameters and $\varepsilon_t = D_t^{-1}y_t$ are the standardized but correlated residuals. That is, the conditional variances of the components of $\varepsilon_t$ are equal to 1, but the conditional correlation are given by $R_t$. The term $diag(Q_t)$ is a diagonal matrix with the same diagonal elements as $Q_t$. S is the sample correlation matrix of $\varepsilon_t$, which is a consistent estimator of the unconditional correlation matrix. If $\alpha$ and $\beta$ are zero, one obtains the above CCC model. If they are different from zero, one gets a kind of ARMA structure for all correlations.
+
+\subsection{Asymmetric Generalized Dynamic Conditional Correlation (AGDCC-) GARCH Models}
+Cappiello, Engle and Sheppard generalized the DCC-GARCH model to allow it include asymmetirc effects. In the AGDCC model, the dynamics of $Q_t$ is different from that in DCC-GARCH model (\ref{DCCQ}):
+\begin{equation}
+\centering
+Q_t = (S-A^{'}SA-B^{'}SB-G^{'}\overline{S}G) + A^{'}\varepsilon_{t-1}\varepsilon^{'}_{t-1}A + B^{'}Q_{t-1}B + G^{'}\overline{\varepsilon}_{t-1}\overline{\varepsilon}^{'}_{t-1}G
+\end{equation}
+where A, B and G are $N\times N$ parameter matrices, $\overline{\varepsilon} = \mathbb{I}_{\varepsilon_t<0}\odot\epsilon_t$, where $\mathbb{I}$ is an indicator function, and S and $\overline{s}$ are the unconditional covariance matrices of $\varepsilon_t$ and $\overline{\varepsilon}_t$, respectively. As is seen, the number of parameters increases rapidly with the dimension of the model, and restricted versions were suggested in the paper. When A, B, G are replaced by scalars, a special case of ADCC-GARCH is obtained. And When G = 0, the generalized DCC-GARCH is obtained. Besides, A, B, and G can be set to diagonal matrices and other forms.\\
+\noindent Christian M. Hafner (2009) extended DCC model in the following way
+\begin{center}
+\begin{equation}
+H_t = D_tR_tD_t
+\end{equation}
+\begin{equation}
+R_t = diag (Q_t)^{-1/2}Q_tdiag (Q_t)^{-1/2}
+\end{equation}
+\begin{equation}\label{GDCC}
+Q_t = S(1 - \overline{\alpha}^2 - \overline{\beta}^2) + \alpha\alpha^{'}\odot\varepsilon_{t-1}\varepsilon_{t-1}^{'} + \beta\beta^{'}\odot Q_{t-1}
+\end{equation}
+\end{center}
+where $\odot$ denotes the Hadamard matrix product operator, i.e.,elementwise multiplication. In(\ref{GDCC}), $\alpha$ and $\beta$ are $N\times1$ parameter vectors, $\overline{\alpha} = N^{-1}\sum\limits^{N}_{i=1}\alpha_i$, and $\overline{\beta} = N^{-1}\sum\limits^{N}_{i=1}\beta_i$. In order to ensure stationary and positivity of $Q_t$, the restrictions $\alpha_i\geq 0,$, $\beta_i\geq 0$ and $\alpha_i^2 + \beta_i^2 >0$ are imposed. Clearly, the DCC model results as a special case if $\alpha_1 = \cdots = \alpha_N$ and $\beta_1 = \cdots = \beta_N$.
+
+
+\subsection{Sequential Conditional Correlation (SCC-) GARCH Models}
+ The CCC and DCC models decompose the conditional variance-covariance matrix into the conditional variances and the conditional correlation. Alessandro Palandri (2009) provided the Sequential Conditional Correlation (SCC) model, which further extends the method by breaking the conditional correlation matrix into the product of a sequence of matrices with desirable characteristics, in effect converts a highly dimensional and intractable optimization problem into a series of simple and feasible estimations. In SCC model, the conditional variance-covariance matrix can be written as follows:\\
+\begin{equation}
+\centering
+H_t = D_tK_{1,2,t}K_{1,3,t}\cdots K_{N-1,N,t}K^{'}_{N-1,N,t}\cdots K^{'}_{1,3,t}K^{'}_{1,2,t}D_t
+\end{equation}
+\noindent or in a more compact manner as:\\
+\begin{equation}
+\centering
+H_t = D_t(\prod\limits^{N-1}_{i=1}\prod\limits^{N}_{i+1}K^{i,j,t})(\prod\limits^{N-1}_{i=1}\prod\limits^{N}_{i+1}K^{i,j,t})^{'}D_t
+\end{equation}
+\noindent where $D_t$ is the ($N\times N$)diagonal matrix of time-varying standard deviations. And the matrices $K_{i,j,t}$ are lower triangular and their generic element[row,col] is given by\\
+\begin{equation}
+\centering
+K_{i,j,t}[row,col] = \left\{
+\begin{array}{ll}
+\rho_{i,j,t} &\mbox{if row = j and col = i}\\
+(1-\rho_{i,j,t}^2)^{1/2} &\mbox{if row = j and col = j}\\
+I_{[row,col]} &\mbox{otherwise}
+\end{array}
+\right.
+\end{equation}
+
+\subsection{Smooth Transtition Conditional Correlation (STCC-) GARCH models}
+\noindent In the above introduced DCC-GARCH models, the dynamic structure of the time-varying correlations is a function of past returns. There is another class of models that allows the dynamic structure of the correlations to be controlled by an exogenous variable. This varible may be either an obserable variable, a combination of observable variables, or a latent vaiable that represents factors that are difficult to quantify. The Smooth Transition Conditional Correlation (STCC-) GARCH model introduced by Silennoinen and Terasvirta (2005) belongs to this category. In the model, the following dynamic structure is imposed on the conditional correlations:
+\begin{equation}
+\centering
+R_t = (1 - G(S_t))R_{(1)} + G(S_t)R_{(2)}
+\end{equation}
+where $R_(1)$ and $R_(2)$, $R_{(1)}\neq R_(2)$, are positive definite correlation matrices that describe the two extreme states of correlations, and $G(\cdot):\mathbb{R} \rightarrow (0,1)$, is a monotonic function of an observable transition variable $s_t\in \mathcal{F}^{*}_{t-1}$. The authors define $G(\cdot)$ as the logistic function
+\begin{equation}
+\centering
+G(S_t) = (1 - e^(-\gamma(S_t - C)))^{-1}, \ \ \ \gamma>0
+\end{equation}
+where the parameter $\gamma$ determines the velocity and c the location of the transition. In addition to the univariate variance equations, the STCC-GARCH model has N(N-1)+2 parameters. A special case of the STCC-GARCH model is obtained when the transition variable is calendar time. The Time Varying Conditional Correlation (TVCC-) GARCH model was in its bivariate form introduced by Berben and Jansen (2005).
+
+\subsection{Double Smooth Transition Conditional Correlation (DSTCC-) GARCH model}
+The Double Smooth Transition Conditional Correlation (DSTCC-) GARCH model is provided by Silvennoinen and Terasvirta (2007) as an extension of the STCC-GARCH model. In this model, the dynamic structure of $R_t$ can be expressed as
+\begin{equation}
+\centering
+R_t = (1 - G_2(S_{2t})){(1 - G_1(S_{1t}))R_{(11)} + G_1(S_{1t})R_{(21)}} + G_2(S_{2t}){(1-G_1(S_{1t}))}R_{(12) + G_1(S_{1t})R_{(22)}}
+\end{equation}
+This model allows for another transition around the first one.
+
+\subsection{Regime Switching Dynamic Correlation (RSDC-) GARCH model}
+Pletier (2006) falls somewhere between the models with constant correlations and the ones with correlations changing continuously at every period. The model imposes constancy of correlations within a regime while the dynamics enter through switching regimes. Specially,
+\begin{equation}
+\centering
+\mathbb{P}_t = \sum\limits^{R}_{r=1}\mathbb{I}_{\Delta_t=r}\mathbb{P}_{(r)}
+\end{equation}
+where $\Delta_t$ is a (usually first order) Markov chain independent of $\eta_t$ that can take R possible values and is governed by a transition probability matrix $\Pi$, $\mathbb{I}$ is the indicator function, and $\mathbb{P}_r, r = 1, \ldots, R$, are positive definite regime-specific correlation matrices. Correlation component of the model has $RN(N-1)/2-R(R-1)$ parameters. A version that involves fewer parameters is obtained by restricting the R possible states of correlations to be linear combinations of a state of zero correlations and that of possibly high correlations. Thus,
+\begin{equation}
+\centering
+\mathbb{P}_t = (1 - \lambda(\Delta_t))\mathbb{I} + \lambda(\Delta_t)\mathbb{P}
+\end{equation}
+where $\mathbb{I}$ is the identity matrix ('no correlation'), $\mathbb{P}$ is a correlation matrix representing the state of possibly high correlations, and $\lambda(\cdot): {1, \ldots, R}\rightarrow[0, 1]$ is a monotonic function of $\Delta_t$. The number of regimes R is not a parameter to be estimated. If N is not very small, Pelletier (2006) recommends two-step estimation. First estimate the parameters of the GARCH equations and then conditionally on these estimates, estimate the correlations and the switching probability using the EM algorithm.
+
+\subsection{Hierarchical Regime Switching Dynamic Correlation (HRSDC-) GARCH model}
+This model is provided by Philippe CHARLOT (2008) as a generalization of the Regime Switching Dynamic Correlation(RSDC) of Pelletier (2006). The model can be viewed graphically as a Markov-Switching version of the DSTCC model (Silvennoinen and Terasvirta 2007). The Hierarchical Hidden Markov Model (HHMM) has been proposed by Fine et al. (1998) in order to gerneralize the HMM model. The hierarchical structure allows states to increase the granularity of the regimes. It establishes different types of regimes, which in the model are primaries and secondaries. The primaries regimes correspond to the regimes obtained with a classical Markov Switching Model. To a higher level of granularity, these primaries regimes are built with the secondaries regimes.
+
+The pair of emitting states defined by $(S_1^2, S_2^2)$ forms a Markov-Switching model and the same is true for $(S_3^2, S_4^2)$. The link between these sub-models is provided by the abstract states $i_1^1$ and $i_2^1$. The model is then building on two sub-models with two emitting states each, which transition matrix are respectively:
+\begin{equation}
+\centering
+A_1^2 = \left[
+\begin{array}{cc}
+a_{11}^2 & a_{12}^2\\
+a_{21}^2 & a_{22}^2
+\end{array}
+\right] \ \ and \ \ A_2^2 = \left[
+\begin{array}{cc}
+a_{33}^2 & a_{34}^2\\
+a_{43}^2 & a_{44}^2
+\end{array}
+\right]
+\end{equation}
+and verified constraints:
+\begin{equation}
+\centering
+\left\{
+\begin{array}{ccccccc}
+a_{11}^2&+&a_{21}^2&+&e_1^2&=&1\\
+a_{12}^2&+&a_{22}^2&+&e_2^2&=&1
+\end{array}
+\right.\ and\
+\left\{
+\begin{array}{ccccccc}
+a_{33}^2&+&a_{43}^2&+&e_3^2&=&1\\
+a_{34}^2&+&a_{44}^2&+&e_4^2&=&1
+\end{array}
+\right.
+\end{equation}
+where $e_i^2, i = 1, \ldots, 4$ is the probability of exiting from a state of level two and go to a parent state at level one. The two sub-HMM communicate via exiting states through abstract states $i_1^1$ and $i_2^1$. The dynamic in the transition from one to another of these abstract states is defined by the transition matrix:
+\begin{equation}
+\centering
+A^1 = \left[
+\begin{array}{cc}
+a_{11}^1 & a_{21}^1\\
+a_{12}^1 & a_{22}^1
+\end{array}
+\right]
+\end{equation}
+which verifies:
+\begin{equation}
+\centering
+a_{11}^1 + a_{12}^1 = 1 \ \ and\ \ a_{21}^1 + a_{22}^1 = 1;
+\end{equation}
+Parameters $\pi_i^2$, $i = 1,\ldots, 4$ presents the probability to move from a parent state of first level to one of its children at the second state level. These probabilities must verify:
+\begin{equation}
+\centering
+\pi_1^2 + \pi_2^2 = 1\ \ and\ \ \pi_3^2 + \pi_3^2 + \pi_2^4 = 1
+\end{equation}
+The specification for the four correlation matrix constants in time is that outlined by Pelletier ( see equation 2.29 and 2.31). In fact, the only difference with the RSDC is the hierarchical hidden structure which introduce us to see the RSDC as a special case of the HRSDC with only one level. As in the RSDC model, the specification defined by equation 2.29 can be estimate by EM algorithm whereas formulation defined by equation 2.31 allows to use iterative methods like Gradient.
+
+\section{Paper Searching by People}
+Focusing on estimation methods of MGARCH model with large portfolio numbers, regime switching, and application of estimated correlations.
+\subsection{Robert Engle and Kevin Sheppard}
+\textbf{Dynamic Equicorrelation, working paper, 2007}\\
+\noindent\textit{A new covariance matrix estimator is proposed under the assumption that at every time period all pairwise correlations are equal. This assumption, which is pragmatically applied in various areas of finance, makes it possible to estimate arbitrarily large covariance matrices with ease. The model, called DECO, involves first adjusting for individual volatilities and then estimating correlations. A quasi-maximum likelihood result shows that DECO provides consistent parameter estimates even when the equicorrelation assumption is violated. This paper demonstrates
+how to generalize DECO to block equicorrelation structures.  DECO estimates for US stock return data show that (block) equicorrelated models can provide a better ?t of the data than DCC. Using out-of-sample forecasts, DECO and Block DECO are shown to improve portfolio selection compared to an unrestricted dynamic correlation structure.}\\
+\noindent\textbf{Fitting and testing vast dimensional time-varying covariance models, working paper, 2007}\\
+\noindent\textit{Building models for high dimensional portfolios is important in risk management and asset
+allocation. Here we propose a novel way of estimating models of time-varying covariances that
+overcome some of the  computational problems which  have troubled existing  methods  when
+applied to 1,000s of assets. The theory of this new strategy is developed in some detail, allowing
+formal hypothesis testing to be carried out on these models.  Simulations are used to explore
+the performance of this inference strategy while empirical examples are reported which show
+the strength of this method.}\\
+\noindent\textbf{High Dimension Dynamic Correlation, working paper, 2007}\\
+\noindent\textit{This paper develops time series methods for forecasting correlations in high dimensional problems. The Dynamic Conditional Correlation  model  is  given  a  new  convenient estimation  approach  called  the  MacGyver  method.    It  is  compared  with  the  FACTOR ARCH model and a new model called the FACTOR DOUBLE ARCH model.  Finally, the latter model is blended with the DCC to give a FACTOR DCC model.  This family of models  is  estimated  with  daily  returns  from  18  US  large  cap  stocks.    Economic  loss functions designed to form optimal portfolios and optimal hedges are used to compare the performance of the methods.   The best approach invariably is the FACTOR DCC and the next best is the FACTOR DOUBLE ARCH.}
+
+\subsection{Kim Hiang Liow}
+\textbf{Correlation and Volatility Dynamics in International Real Estate Securities Markets, J Real Estate Finance and  Economics (2009) 39: 202¨C223}\\
+\noindent\textit{The research design adopts a two-step approach. The first step undertakes the DCC methodology proposed by Engle (2002) to model the fluctuations of the correlation and volatility between international real estate securities markets and between stock markets over time. In the second step, the estimates of the conditional correlation and volatility are fitted to two multiple regression models in order to investigate the evolution of the real estate securities market correlations over time.}\\
+\textbf{Volatility Decomposition and Correlation in International Securitized Real Estate Markets, Journal of Real Estate Finance and Economics (2010) 40:221-43}\\
+\noindent\textit{This study contributes to the literature in international  securitized real estate  market  volatility  in  three  ways.  Each  market's  conditional  volatility  is decomposed into a "permanent" or long-run component and a "transitory" or short-run  component  via  a  component-GARCH  model.  Even  though  with  the  same
+number of common factors derived from the "permanent" and "transitory" volatility series, their loadings are not similar and consequently the long-run and short-run volatility  linkages  for  some  markets  are  different. Finally  there  are  significant volatility co-movements between real estate and stock markets "permanent" and "transitory" components  suggesting that real estate markets are at least not segmented from stock markets in international investing.}\\
+\noindent\textbf{Multiple Regimes and Volatility Transmission in Securitized Real Estate Markets, Journal of Real Finance and Economics, 2009}\\
+\noindent\textit{This paper examines the dynamics and transmission of conditional volatilities with multiple structural changes in return volatility across five major securitized real estate markets as well as employing a multivariate regime-dependent asymmetric dynamic covariance methodology (MRDADC) that allows the conditional matrix to be both time- and state-varying.}
+
+\subsection{Denis Pelletier}
+A State Dependent Regime Switching Model of Dynamic Correlations, working paper\\
+\noindent\textit{This paper extend the Regime Switching for Dynamic Correlations (RSDC) model by Pelletier (Journal of Econometrics, 2006), to determine the effect of underlying fundamental variables in the evolution of the dynamic correlations between multiple time series. By introducing state dependent transition probabilities to the switching process between different regimes - governed by a Markov hain, we are able to identify potential thresholds and spillover effects in the dynamic process. In addition, asymmetric correlations between the series are determined. We simulate data for multiple series and find an initial better fit of state dependent transition probabilities, versus constant transition probabilities, for the regime switching model. Capturing more precisely the dynamic interrelationships between multiple series or markets conveys many benefits including - potential efficiency gains from related operations, determining the effects of shocks from related variables, as well as improvement in hedging operations.}
+
+\subsection{Monica Billio and Massimilizno Caporin}
+\textbf{Structured Multivariate Volatility Models, working paper, 2008}\\
+\textit{This paper proposes structured parametrizations for multivariate volatility models, which use spatial weight matrices induced by economic proximity. These structured specifications aim at solving the curse of dimensionality problem, which limits feasibility of model-estimation to small cross-sections for unstructured models. Structured parametrizations possess the following four desirable properties: i) they are ?exible, allowing for
+covariance spill-over; ii) they are parsimonious, being characterized by a number of parameters that grows only linearly with the cross-section dimension; iii) model parameters have a direct economic interpretation that re?ects the chosen notion of economic classification; iv) model-estimation computations are faster than for unstructured specifications.}\\
+\noindent\textbf{Thresholds, News Impact Surfaces and Dynamic Asymmetric Multivariate GARCH, working paper, 2007}\\
+\noindent\textit{ DAMGARCH  extends  the  VARMA-GARCH  model  of  Ling  and  McAleer  (2003)  by introducing multiple thresholds and time-dependent structure in the asymmetry of the conditional variances. DAMGARCH models the shocks affecting the conditional variances on the basis of an underlying  multivariate  distribution.  It  is  possible  to  model  explicitly  asset-specific  shocks  and common innovations by partitioning the multivariate density support. This paper presents the model structure,  describes  the  implementation  issues,  and  provides  the  conditions  for  the  existence  of  a unique  stationary  solution,  and  for  consistency  and  asymptotic  normality  of  the  quasi-maximum likelihood  estimators.  The  paper  also provides  analytical  expressions  for  the  news  impact  surface implied by DAMGARCH and an empirical example.}\\
+\noindent\textbf{Volatility Threshold Dynamic Conditional Correlations: An International Analysis, working paper, 2007}\\
+\noindent\textit{This paper extends the Dynamic Conditional Correlation multivariate GARCH specification to investigate the dynamic contemporaneous relationship between correlations and variances of the underlying
+assets, by presenting a generalization of the DCC model where the dynamic behavior depends on the  assets  variances  through  a  threshold  structure. The  purpose  is  to  analyze  the  behavior  of correlations  in  periods  of  high  volatility. The application  of  the  proposed  specification  to  a sample of markets heterogeneous in the levels of their development allows the identification of market pairs whose correlations show low sensitivity to high underlying volatility.}
+
+\subsection{Markus Haas}
+
+\subsection{Annastiina Silvennoinen}
+\noindent no new papers about dynamic correlation model.
+\subsection{Timo Terasvirta}
+\noindent new papers about dynamic correlation model.
+\subsection{Philippe Charlot}
+\noindent no new papers about dynamic correlation model.
+\subsection{Markku Lanne}
+A Multivariate Generalized Orthogonal Factor GARCH Model,Discussion Paper, 2005\\
+\noindent \textit{The  paper  studies  a  factor  GARCH  model  and  develops  test  procedures  which  can  be
+used to test the number of factors needed to model  the conditional heteroskedasticity in the considered time series vector. Assuming normally distributed errors the parameters of the  model  can  be  straightforwardly  estimated  by  the  method  of  maximum  likelihood. Inefficient but computationally simple preliminary estimates are first obtained and used as initial  values  to  maximize  the  likelihood  function.  Maximum  likelihood  estimation  with nonnormal  errors  is  also  straightforward.  Motivated  by  the  empirical  application  of  the paper a mixture of normal distributions is considered.}
+\subsection{Luc Bauwens}
+a component GARCH model with time varying weights, discussion paper, 2007\\
+\noindent \textit{This paper presents  a  novel  GARCH  model  that  accounts  for  time  varying,  state  dependent, persistence in the volatility dynamics.  The proposed model generalizes the component GARCH  model  of  Ding  and  Granger  (1996).  The  volatility  is  modelled  as  a  convex combination of unobserved GARCH components where the combination weights are time varying as a function of appropriately chosen state variables.}
+\subsection{Pentti Saikkonen}
+\noindent no new papers about dynamic correlation model.
+\subsection{Michael McAleer}
+\textbf{Crude Oil Hedging Strategies Using Dynamic Multivariate GARCH, working paper, 2010}\\
+\noindent \textit{The paper examines the performance of four multivariate volatility models, namely CCC, VARMA-GARCH, DCC and BEKK, for the crude oil spot and futures returns of two major benchmark international crude oil markets, Brent and WTI, to calculate optimal portfolio weights and optimal hedge ratios, and to suggest a crude oil hedge strategy.}\\
+Do We Really Need Both BEKK and DCC? A Tale of Two Multivariate GARCH Models, working paper, 2010\\
+\noindent \textit{The management and monitoring of very large portfolios of financial assets are routine for many individuals and organizations. The two most widely used models of conditional covariances and correlations in the class of multivariate GARCH models are BEKK and DCC. It is well known that BEKK suffers from the archetypal "curse of dimensionality", whereas DCC does not. It is argued in this paper that this is a misleading interpretation of the suitability of the two models for use in practice. The primary purpose of this paper is to analyze the similarities and dissimilarities between BEKK and DCC, both with and without targeting, on the basis of the structural derivation of the models, the availability of analytical forms for the sufficient conditions for existence of moments, sufficient conditions for consistency and asymptotic normality of the appropriate estimators, and computational tractability for ultra large numbers of financial assets. Based on theoretical considerations, the paper sheds light on how to discriminate between BEKK and DCC in practical applications.}
+\subsection{Roy van der Weide}
+Testing the number of factors in GO-GARCH models, working paper, 2007\\
+\noindent \textit{This paper proposes two tests for the number of heteroskedastic factors in a generalized orthogonal
+GARCH (GO-GARCH) model. The first test is the Gaussian likelihood ratio test, the second is a reduced rank test applied to suitably defined autocovariance matrices. We characterize the asymptotic null distributions of the tests, and compare their finite sample size and power properties to an alternative test proposed by Lanne and Saikkonen (2007).}\\
+noindent Method of Moments Estimation of GO-GARCH Models,working paper, 2009\\
+\noindent \textit{This paper proposes a new estimation method for the factor loading matrix in generalized orthogonal
+GARCH (GO-GARCH) models. The method is based on the eigenvectors of a suitably defined sample autocorrelation matrix of squares and cross-products of the process. The method can therefore be easily applied to high-dimensional systems, where likelihood-based estimation will run into computational problems. We provide conditions for consistency of the estimator, and study its efficiency relative to maximum likelihood estimation using Monte Carlo simulations. The method is applied to European sector returns, and to the correlation between oil and kerosene returns and
+airline stock returns.}
+\subsection{H. Peter Boswijk}
+\noindent no new papers about dynamic correlation model.
+\subsection{Tae-Hwy Lee}
+Copula-based Multivariate GARCH Models with Uncorrelated Dependent Errors¡±, with Xiangdong Long, June 2009, Journal of Econometrics, 150, 207-218 \\
+\noindent \textit{Multivariate GARCH (MGARCH) models are usually estimated under multivariate normality. In this paper, for non-elliptically distributed .nancial returns, we propose copula-based multivariate GARCH (C-MGARCH) model with uncorrelated dependent errors, which are generated through a linear combination of dependent random variables. The dependence structure is controlled by a copula function. Our new C-MGARCH model nests a conventional MGARCH model as a special case. The aim of this paper is to model MGARCH for non-normal multivariate distributions using copulas. We model the conditional correlation (by MGARCH) and the remaining dependence (by a copula) separately and simultaneously. We apply this idea to three MGARCH models, namely, the dynamic conditional correlation (DCC) model of Engle (2002), the varying correlation (VC) model of Tse and Tsui (2002), and the BEKK model of Engle and Kroner (1995). Empirical analysis with three foreign exchange rates indicates that the C-MGARCH models outperform DCC, VC,
+and BEKK in terms of in-sample model selection and out-of-sample multivariate density forecast, and in terms of these criteria the choice of copula functions is more important than the choice of the volatility models.}
+\subsection{Chan Lai wan}
+Tu Zhou, Laiwan Chan: Clustered Dynamic Conditional Correlation Multivariate GARCH Model. DaWaK 2008: 206-216\\
+\noindent Efficient Factor GARCH Models and Factor-DCC models, Quantitative Finance, 2009\\
+\subsection{Alessandro Palandri}
+The Effects of Interest Rate Movements on Assets' Conditional Second Moments, working paper, 2009\\
+\noindent \textit{This paper investigates whether the short term interest rate may explain the movements observed in the conditional second moments of asset returns. The theoretical connections between these seemingly unrelated quantities are studied within the C-CAPM framework. Original results are derived that attest the existence of a relation between the risk-free rate and the conditional second moments of asset returns. The empirical findings, involving 165 stock returns quoted at the NYSE, confirm that the interest rate is a determinant of the 165 conditional variances and 13530 conditional correlations.}
+\end{document}
+
+
+
+
